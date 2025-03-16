@@ -9,6 +9,8 @@ import AddCampaign from "../Private-Route/AddCampaign";
 import CampaignDetails from "../Pages/CampaignDetails";
 import MyCampaign from "../Private-Route/MyCampaign";
 import AllCampaigns from "../Private-Route/AllCampaigns";
+import UpdateCampaign from "../Private-Route/UpdateCampaign";
+import NotFound from "../components/NotFound";
 
 const Router = createBrowserRouter([
   {
@@ -41,6 +43,11 @@ const Router = createBrowserRouter([
         ),
       },
       {
+        path: 'updateCampaign/:id',
+        element: <UpdateCampaign></UpdateCampaign>,
+        loader: ({params}) => fetch(`http://localhost:5000/campaign/${params.id}`)
+      },
+      {
         path: "form",
         element: (
           <PrivateRoute>
@@ -58,7 +65,7 @@ const Router = createBrowserRouter([
       { path: "/auth/register", element: <SignUp /> },
     ],
   },
-  { path: "*", element: <h1>Page Not Found</h1> },
+  { path: "*", element: <NotFound></NotFound>},
 ]);
 
 export default Router;

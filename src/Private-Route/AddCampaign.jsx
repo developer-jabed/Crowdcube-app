@@ -127,7 +127,7 @@ export default function AddCampaign() {
           </label>
           <input
             type="text"
-            name="name"
+            name="titleName"
             className="mt-2 w-full px-4 py-2 border rounded-xl"
             required
           />
@@ -191,7 +191,8 @@ export default function AddCampaign() {
           </label>
           <input
             type="text"
-            value={user.displayName}
+            name="email"
+            value={user.email}
             readOnly
             className="mt-2 w-full px-4 py-2 border rounded-xl bg-gray-100"
           />
@@ -203,7 +204,8 @@ export default function AddCampaign() {
           </label>
           <input
             type="text"
-            value={user.email}
+            name="name"
+            value={user.displayName}
             readOnly
             className="mt-2 w-full px-4 py-2 border rounded-xl bg-gray-100"
           />
