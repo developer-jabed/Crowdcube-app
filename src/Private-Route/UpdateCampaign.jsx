@@ -1,134 +1,218 @@
-import { useLoaderData, useNavigate } from "react-router-dom";
-import { useContext, useState } from "react";
+import React, { useContext, useState } from "react";
+import { useLoaderData } from "react-router-dom";
+// eslint-disable-next-line no-unused-vars
+import { motion } from "framer-motion";
 import { AuthContext } from "../Provider/AuthProvider";
-import Swal from "sweetalert2";
 
 const UpdateCampaign = () => {
-  const campaign = useLoaderData();
-  const navigate = useNavigate();
-  const { user, loading } = useContext(AuthContext); // assuming you have loading
+  const updateData = useLoaderData();
+ 
+  const { user } = useContext(AuthContext);
+  const [loading, setLoading] = useState(false);
+  const [imagePreview, setImagePreview] = useState("");
+  console.log(updateData);
 
-  // Show loading state
-  if (loading) return <div>Loading...</div>;
-
-  // If user is still null after loading, redirect or show error
-  if (!user) {
-    return <div className="text-center text-red-500">User not logged in.</div>;
-  }
-
-  const [formData, setFormData] = useState({
-    title: campaign?.title || "",
-    type: campaign?.type || "",
-    amount: campaign?.amount || "",
-    date: campaign?.date || "",
-    description: campaign?.description || "",
-  });
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+  // image validation
+  const handleImageChange = (event) => {
+    const url = event.target.value;
+    if (isValidImageUrl(url)) {
+      setImagePreview(url);
+    } else {
+      setImagePreview("");
+    }
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  // fetch update onclick
 
-    fetch(`http://localhost:5000/campaign/${campaign._id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        ...formData,
-        email: user.email,
-        name: user.displayName,
-      }),
+  const handleUpdateCampaign = async (event) => {
+    event.preventDefault();
+    setLoading(true);
+
+    const form = event.target;
+    const photoUrl = form.photoUrl.value.trim();
+    const name = form.name.value.trim();
+    const type = form.type.value;
+    const description = form.description.value.trim();
+    const amount = form.amount.value.trim();
+    const date = form.date.value;
+
+    if (!photoUrl || !name || !type || !description || !amount || !date) {
+      alert("All fields are required!");
+      setLoading(false);
+      return;
+    }
+
+    const parsedAmount = parseFloat(amount);
+    if (isNaN(parsedAmount) || parsedAmount <= 0) {
+      alert("Amount must be a valid positive number!");
+      setLoading(false);
+      return;
+    }
+
+    const updateCampaign = {
+      photoUrl,
+      name,
+      type,
+      description,
+      amount: parsedAmount,
+      date,
+    };
+    fetch('http://localhost:5000/campaign',{
+      method: 'PUT',
+      headers: {
+        'content-type': 'aplication/json'
+      },
+      body: JSON.stringify(updateCampaign)
     })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.modifiedCount > 0) {
-          Swal.fire("Success!", "Campaign updated successfully.", "success");
-          navigate("/my-campaign");
-        } else {
-          Swal.fire("No Changes", "No data was updated.", "info");
-        }
-      })
-      .catch((err) => {
-        console.error(err);
-        Swal.fire("Error", "Something went wrong!", "error");
-      });
+    .then(res => res.json())
+    .then((data) => {
+      
+    })
+  };
+
+  const isValidImageUrl = (url) => {
+    return url.match(/\.(jpeg|jpg|gif|png)$/) != null;
   };
 
   return (
-    <div className="max-w-2xl mx-auto mt-10 p-6 bg-white shadow rounded">
-      <h2 className="text-2xl font-bold mb-4 text-center">Update Campaign</h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <input
-          type="text"
-          name="title"
-          value={formData.title}
-          onChange={handleChange}
-          placeholder="Title"
-          required
-          className="w-full p-2 border rounded"
-        />
+    <motion.div
+      initial={{ opacity: 0, y: -20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="max-w-lg mx-auto mt-20 p-6 bg-white shadow-2xl rounded-2xl border border-gray-200"
+    >
+      <h2 className="text-3xl font-bold text-center mb-6 text-gray-800">
+        Add New Campaign
+      </h2>
 
-        <input
-          type="text"
-          name="type"
-          value={formData.type}
-          onChange={handleChange}
-          placeholder="Category/Type"
-          required
-          className="w-full p-2 border rounded"
-        />
+      <motion.form onSubmit={handleUpdateCampaign} className="space-y-6">
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            Photo URL
+          </label>
+          <input
+            type="text"
+            name="photoUrl"
+            defaultValue={updateData.photoUrl}
+            placeholder="Enter image URL"
+            className="mt-2 w-full px-4 py-2 border rounded-xl focus:ring-2 focus:ring-blue-500"
+            onChange={handleImageChange}
+          />
+        </div>
 
-        <input
-          type="number"
-          name="amount"
-          value={formData.amount}
-          onChange={handleChange}
-          placeholder="Goal Amount"
-          required
-          className="w-full p-2 border rounded"
-        />
+        {imagePreview && (
+          <img
+            src={imagePreview}
+            alt="Preview"
+            className="w-full h-64 object-cover rounded-xl shadow-lg"
+          />
+        )}
 
-        <input
-          type="date"
-          name="date"
-          value={formData.date}
-          onChange={handleChange}
-          required
-          className="w-full p-2 border rounded"
-        />
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            Campaign Name
+          </label>
+          <input
+            type="text"
+            name="titleName"
+            defaultValue={updateData.titleName}
+            className="mt-2 w-full px-4 py-2 border rounded-xl"
+            required
+          />
+        </div>
 
-        <textarea
-          name="description"
-          value={formData.description}
-          onChange={handleChange}
-          placeholder="Description"
-          required
-          className="w-full p-2 border rounded"
-        />
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            Campaign Type
+          </label>
+          <select
+            name="type"
+            defaultValue={updateData.type}
+            className="mt-2 w-full px-4 py-2 border rounded-xl"
+            required
+          >
+            <option value="">Select Type</option>
+            <option value="personal issue">Personal Issue</option>
+            <option value="startup">Startup</option>
+            <option value="business">Business</option>
+            <option value="creative ideas">Creative Ideas</option>
+          </select>
+        </div>
 
-        <input
-          type="text"
-          value={user.displayName}
-          readOnly
-          className="w-full p-2 border bg-gray-100 rounded"
-        />
-        <input
-          type="email"
-          value={user.email}
-          readOnly
-          className="w-full p-2 border bg-gray-100 rounded"
-        />
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            Description
+          </label>
+          <textarea
+            name="description"
+            defaultValue={updateData.description}
+            className="mt-2 w-full px-4 py-2 border rounded-xl"
+            required
+          ></textarea>
+        </div>
 
-        <button
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            Minimum Donation Amount
+          </label>
+          <input
+            type="number"
+            name="amount"
+            defaultValue={updateData.amount}
+            className="mt-2 w-full px-4 py-2 border rounded-xl"
+            required
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            Deadline
+          </label>
+          <input
+            type="date"
+            name="date"
+            className="mt-2 w-full px-4 py-2 border rounded-xl"
+            required
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            User Email
+          </label>
+          <input
+            type="text"
+            name="email"
+            value={user.email}
+            readOnly
+            className="mt-2 w-full px-4 py-2 border rounded-xl bg-gray-100"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            User Name
+          </label>
+          <input
+            type="text"
+            name="name"
+            value={user.displayName}
+            readOnly
+            className="mt-2 w-full px-4 py-2 border rounded-xl bg-gray-100"
+          />
+        </div>
+
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
           type="submit"
-          className="w-full bg-blue-500 text-white py-2 rounded"
+          disabled={loading}
+          className="w-full bg-blue-500 text-white py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all disabled:opacity-50"
         >
-          Update
-        </button>
-      </form>
-    </div>
+          {loading ? "Submitting..." : "Add Campaign"}
+        </motion.button>
+      </motion.form>
+    </motion.div>
   );
 };
 

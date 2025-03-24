@@ -83,7 +83,7 @@ const HomePage = () => {
                     alt={campaign.name}
                     className="w-full h-48 object-cover rounded-lg"
                   />
-                  <h3 className="text-xl font-bold mt-4">{campaign.name}</h3>
+                  <h3 className="text-xl font-bold mt-4">{campaign.type}</h3>
                   <p className="text-gray-700">{campaign.description}</p>
                   <p className="mt-2 text-lg font-semibold text-blue-600">
                     ${campaign.amount}
