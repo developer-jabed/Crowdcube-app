@@ -8,7 +8,7 @@ export default function AddCampaign() {
   const [loading, setLoading] = useState(false);
   const [imagePreview, setImagePreview] = useState("");
   const { user } = useContext(AuthContext);
-
+  console.log(user);
   const handleAddCampaign = async (event) => {
     event.preventDefault();
     setLoading(true);

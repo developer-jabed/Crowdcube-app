@@ -9,39 +9,53 @@ import { AuthContext } from "../Provider/AuthProvider";
 const SignUp = () => {
   const { createNewUser, setUser } = useContext(AuthContext);
   const navigate = useNavigate();
+
   const [passwordVisible, setPasswordVisible] = useState(false);
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = (event) => {
     event.preventDefault();
     const form = new FormData(event.target);
-    const displayName = form.get("name");
+    const displayName = form.get("displayName");
     const email = form.get("email");
     const photoURL = form.get("photo");
     const password = form.get("password");
 
-    try {
-      const result = await createNewUser(email, password);
-      const user = result.user;
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z]).{6,}$/;
 
-      // Ensure the user object exists before updating profile
-      if (user) {
-        await updateProfile(user, { displayName, photoURL });
-        setUser({ ...user, displayName, photoURL });
-
-        toast.success("🎉 Account created successfully!", {
-          position: "top-center",
-          autoClose: 5000,
-        });
-
-        navigate("/");
-      }
-    } catch (error) {
-      toast.error(`⚠️ ${error.message}`, {
-        position: "top-center",
-        autoClose: 5000,
-      });
+    if (!passwordRegex.test(password)) {
+      toast.error(
+        '🦄 "Password must be at least 6 characters long and include both uppercase and lowercase letters."!',
+        { position: "top-center", autoClose: 5000 }
+      );
+      return;
     }
+
+    createNewUser(email, password,photoURL, displayName)
+      .then((result) => {
+        const user = result.user;
+
+  
+        return updateProfile(user, {
+          displayName: displayName,
+          photoURL: photoURL,
+        }).then(() => {
+          setUser({ ...user, displayName, photoURL });
+          console.log("User updated:", { displayName, photoURL });
+
+          toast.success("🦄 Account created successfully!!", {
+            position: "top-center",
+            autoClose: 5000,
+          });
+
+          navigate("/");
+        });
+      })
+      .catch((error) => {
+        console.error(error);
+        toast.error("Error: " + error.message, { position: "top-center" });
+      });
   };
+
 
   return (
     <div className="mt-10">
@@ -61,7 +75,7 @@ const SignUp = () => {
                   Name
                 </label>
                 <input
-                  name="name"
+                  name="displayName"
                   type="text"
                   className="input"
                   placeholder="Name"
@@ -83,7 +97,7 @@ const SignUp = () => {
                   Photo URL
                 </label>
                 <input
-                  name="photo"
+                  name="photoURL"
                   type="text"
                   className="input"
                   placeholder="Photo URL"
