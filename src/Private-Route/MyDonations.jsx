@@ -1,9 +1,18 @@
 import { useLoaderData } from "react-router-dom";
 // eslint-disable-next-line no-unused-vars
 import { motion } from "framer-motion";
+import { useContext } from "react";
+import { AuthContext } from "../Provider/AuthProvider";
 
 const MyDonations = () => {
   const donations = useLoaderData();
+
+  const { user } = useContext(AuthContext);
+
+  // Filter donations based on logged-in user's email
+  const userDonations = donations.filter(
+    (donation) => donation.donorEmail === user?.email
+  );
 
   return (
     <div className="mt-25 max-w-6xl mx-auto px-4">
@@ -13,10 +22,10 @@ const MyDonations = () => {
         transition={{ duration: 0.6 }}
         className="text-4xl font-bold mb-10 text-center text-green-700"
       >
-        My Donations ({donations.length})
+        My Donations ({userDonations.length})
       </motion.h1>
 
-      {donations.length === 0 ? (
+      {userDonations.length === 0 ? (
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -27,7 +36,7 @@ const MyDonations = () => {
         </motion.p>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {donations.map((donation, index) => (
+          {userDonations.map((donation, index) => (
             <motion.div
               key={donation._id}
               initial={{ opacity: 0, scale: 0.95 }}
@@ -45,8 +54,8 @@ const MyDonations = () => {
                   {donation.campaignName}
                 </h2>
                 <p className="text-gray-700 mb-1">
-                  <span className="font-medium">Donated:</span>{" "}
-                  ${donation.donatedAmount}
+                  <span className="font-medium">Donated:</span> $
+                  {donation.donatedAmount}
                 </p>
                 <p className="text-gray-700 mb-1">
                   <span className="font-medium">Date:</span>{" "}

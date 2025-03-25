@@ -15,7 +15,7 @@ const MyCampaign = () => {
         const data = await response.json();
 
         const userCampaigns = data.filter((campaign) => {
-          return campaign?.name === user.displayName;
+          return campaign?.email === user.email;
         });
 
         setCampaigns(userCampaigns);

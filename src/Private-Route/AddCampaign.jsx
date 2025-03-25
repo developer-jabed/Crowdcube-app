@@ -8,43 +8,52 @@ export default function AddCampaign() {
   const [loading, setLoading] = useState(false);
   const [imagePreview, setImagePreview] = useState("");
   const { user } = useContext(AuthContext);
-  console.log(user);
 
   const handleAddCampaign = async (event) => {
     event.preventDefault();
     setLoading(true);
 
     const form = event.target;
-    const photoUrl = form.photoUrl.value.trim();
-    const name = form.name.value.trim();
-    const type = form.type.value;
-    const description = form.description.value.trim();
-    const amount = form.amount.value.trim();
-    const date = form.date.value;
+    const photoUrl = form.photoUrl?.value?.trim() || "";
 
-    if (!photoUrl || !name || !type || !description || !amount || !date) {
-      alert("All fields are required!");
+    const type = form.type?.value || "";
+    const description = form.description?.value?.trim() || "";
+    const amount = form.amount?.value?.trim() || "";
+    const email = form.email?.value?.trim() || "";
+    const displayName = form.displayName?.value?.trim() || "";
+    const date = form.date?.value || "";
+
+    if (!photoUrl || !type || !description || !amount || !date) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "All fields are required!",
+      });
       setLoading(false);
       return;
     }
 
     const parsedAmount = parseFloat(amount);
     if (isNaN(parsedAmount) || parsedAmount <= 0) {
-      alert("Amount must be a valid positive number!");
+      Swal.fire({
+        icon: "error",
+        title: "Invalid Amount",
+        text: "Amount must be a valid positive number!",
+      });
       setLoading(false);
       return;
     }
 
     const newCampaign = {
       photoUrl,
-      name,
+
       type,
       description,
       amount: parsedAmount,
       date,
-   
+      email,
+      displayName,
     };
-    console.log("📤 Sending campaign:", newCampaign);
 
     try {
       const response = await fetch("http://localhost:5000/campaign", {
@@ -69,23 +78,34 @@ export default function AddCampaign() {
       setImagePreview("");
     } catch (error) {
       console.error("❌ Error:", error);
-      alert(error.message || "Something went wrong!");
+      Swal.fire({
+        icon: "error",
+        title: "Submission Failed",
+        text: error.message || "Something went wrong!",
+      });
     } finally {
       setLoading(false);
     }
   };
 
-  const handleImageChange = (event) => {
+  const handleImageChange = async (event) => {
     const url = event.target.value;
-    if (isValidImageUrl(url)) {
+    if (await isValidImageUrl(url)) {
       setImagePreview(url);
     } else {
       setImagePreview("");
     }
   };
 
-  const isValidImageUrl = (url) => {
-    return url.match(/\.(jpeg|jpg|gif|png)$/) != null;
+  const isValidImageUrl = async (url) => {
+    try {
+      const response = await fetch(url, { method: "HEAD" });
+      return (
+        response.ok && response.headers.get("content-type")?.includes("image")
+      );
+    } catch {
+      return false;
+    }
   };
 
   return (
@@ -120,18 +140,6 @@ export default function AddCampaign() {
             className="w-full h-64 object-cover rounded-xl shadow-lg"
           />
         )}
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Campaign Name
-          </label>
-          <input
-            type="text"
-            name="titleName"
-            className="mt-2 w-full px-4 py-2 border rounded-xl"
-            required
-          />
-        </div>
 
         <div>
           <label className="block text-sm font-medium text-gray-700">
@@ -204,7 +212,7 @@ export default function AddCampaign() {
           </label>
           <input
             type="text"
-            name="name"
+            name="displayName"
             value={user.displayName}
             readOnly
             className="mt-2 w-full px-4 py-2 border rounded-xl bg-gray-100"
