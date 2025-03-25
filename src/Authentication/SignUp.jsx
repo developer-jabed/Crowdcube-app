@@ -3,59 +3,59 @@ import { useContext, useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { Bounce, toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { updateProfile } from "firebase/auth";
 import { AuthContext } from "../Provider/AuthProvider";
 
 const SignUp = () => {
-  const { createNewUser, setUser } = useContext(AuthContext);
+  const { createNewUser } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const [passwordVisible, setPasswordVisible] = useState(false);
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const form = new FormData(event.target);
     const displayName = form.get("displayName");
     const email = form.get("email");
-    const photoURL = form.get("photo");
+    const photoURL = form.get("photoURL");
     const password = form.get("password");
 
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z]).{6,}$/;
-
     if (!passwordRegex.test(password)) {
       toast.error(
-        '🦄 "Password must be at least 6 characters long and include both uppercase and lowercase letters."!',
-        { position: "top-center", autoClose: 5000 }
+        "Password must include both uppercase and lowercase letters!",
+        {
+          position: "top-center",
+          autoClose: 5000,
+        }
       );
       return;
     }
 
-    createNewUser(email, password,photoURL, displayName)
-      .then((result) => {
-        const user = result.user;
+    try {
+      const user = await createNewUser(email, password, displayName, photoURL);
+      if (!user) throw new Error("User creation failed!");
 
-  
-        return updateProfile(user, {
-          displayName: displayName,
-          photoURL: photoURL,
-        }).then(() => {
-          setUser({ ...user, displayName, photoURL });
-          console.log("User updated:", { displayName, photoURL });
+      console.log("User created:", user);
 
-          toast.success("🦄 Account created successfully!!", {
-            position: "top-center",
-            autoClose: 5000,
-          });
-
-          navigate("/");
-        });
-      })
-      .catch((error) => {
-        console.error(error);
-        toast.error("Error: " + error.message, { position: "top-center" });
+      toast.success("🎉 Account created successfully!", {
+        position: "top-center",
+        autoClose: 5000,
       });
-  };
 
+      const newUser = { displayName, email, photoURL, password };
+
+      await fetch("http://localhost:5000/users", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newUser),
+      });
+
+      navigate("/");
+    } catch (error) {
+      console.error("Error:", error);
+      toast.error("Error: " + error.message, { position: "top-center" });
+    }
+  };
 
   return (
     <div className="mt-10">
