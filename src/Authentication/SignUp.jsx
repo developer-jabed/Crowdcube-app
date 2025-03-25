@@ -19,38 +19,37 @@ const SignUp = () => {
     const photoURL = form.get("photo");
     const password = form.get("password");
 
-    // Password validation
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z]).{6,}$/;
-    if (!passwordRegex.test(password)) {
-      toast.error(
-        "⚠️ Password must be at least 6 characters long and include both uppercase and lowercase letters.",
-        { position: "top-center", autoClose: 5000 }
-      );
-      return;
-    }
-
     try {
       const result = await createNewUser(email, password);
       const user = result.user;
 
-      // Update user profile
-      await updateProfile(user, { displayName, photoURL });
-      setUser({ ...user, displayName, photoURL });
+      // Ensure the user object exists before updating profile
+      if (user) {
+        await updateProfile(user, { displayName, photoURL });
+        setUser({ ...user, displayName, photoURL });
 
-      toast.success("🎉 Account created successfully!", {
+        toast.success("🎉 Account created successfully!", {
+          position: "top-center",
+          autoClose: 5000,
+        });
+
+        navigate("/");
+      }
+    } catch (error) {
+      toast.error(`⚠️ ${error.message}`, {
         position: "top-center",
         autoClose: 5000,
       });
-
-      navigate("/");
-    } catch (error) {
-      toast.error(`⚠️ ${error.message}`, { position: "top-center", autoClose: 5000 });
     }
   };
 
   return (
     <div className="mt-10">
-      <ToastContainer position="top-center" autoClose={5000} transition={Bounce} />
+      <ToastContainer
+        position="top-center"
+        autoClose={5000}
+        transition={Bounce}
+      />
       <div className="hero bg-base-200 min-h-screen">
         <div className="hero-content flex-col lg:flex-row-reverse">
           <div className="card bg-base-100 w-full max-w-lg shrink-0 shadow-2xl">
@@ -58,16 +57,41 @@ const SignUp = () => {
               <h1 className="text-xl font-bold">Sign Up Your Account</h1>
 
               <form onSubmit={handleSubmit} className="fieldset">
-                <label className="fieldset-label font-bold text-black">Name</label>
-                <input name="name" type="text" className="input" placeholder="Name" required />
+                <label className="fieldset-label font-bold text-black">
+                  Name
+                </label>
+                <input
+                  name="name"
+                  type="text"
+                  className="input"
+                  placeholder="Name"
+                  required
+                />
 
-                <label className="fieldset-label font-bold text-black">Email</label>
-                <input name="email" type="email" className="input" placeholder="Email" required />
+                <label className="fieldset-label font-bold text-black">
+                  Email
+                </label>
+                <input
+                  name="email"
+                  type="email"
+                  className="input"
+                  placeholder="Email"
+                  required
+                />
 
-                <label className="fieldset-label font-bold text-black">Photo URL</label>
-                <input name="photo" type="text" className="input" placeholder="Photo URL" />
+                <label className="fieldset-label font-bold text-black">
+                  Photo URL
+                </label>
+                <input
+                  name="photo"
+                  type="text"
+                  className="input"
+                  placeholder="Photo URL"
+                />
 
-                <label className="fieldset-label font-bold text-black">Password</label>
+                <label className="fieldset-label font-bold text-black">
+                  Password
+                </label>
                 <div className="relative">
                   <input
                     name="password"
@@ -85,7 +109,9 @@ const SignUp = () => {
                   </button>
                 </div>
 
-                <button className="btn font-bold btn-neutral mt-4">Register</button>
+                <button className="btn font-bold btn-neutral mt-4">
+                  Register
+                </button>
               </form>
 
               <div className="text-center text-sm text-black">

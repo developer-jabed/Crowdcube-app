@@ -92,7 +92,7 @@ const SignIn = () => {
               <div className="text-center text-sm text-black">
                 Do not have an account?{" "}
                 <Link
-                  to="/signUp"
+                  to="/auth/register"
                   className="link link-hover font-bold text-green-400"
                 >
                   Register Now
