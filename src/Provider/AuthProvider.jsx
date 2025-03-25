@@ -29,12 +29,12 @@ const AuthProvider = ({ children }) => {
         const user = userCredential.user;
 
         return updateProfile(user, { displayName, photoURL }).then(() => {
-          return user; // ✅ Return the user after updating profile
+          return user; 
         });
       })
       .catch((error) => {
         setLoading(false);
-        throw error; // ✅ Properly handle errors
+        throw error; 
       });
   };
 

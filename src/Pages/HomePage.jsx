@@ -62,7 +62,6 @@ const HomePage = () => {
           </div>
         </section>
 
-        {/* Running Campaigns Section */}
         <div className="running-campaigns px-8 py-12">
           <section className="running-campaigns px-8 py-12 bg-gray-100">
             <h2 className="text-3xl font-bold text-center mb-6">
@@ -70,10 +69,10 @@ const HomePage = () => {
             </h2>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-              {campaigns.map((campaign) => (
+              {campaigns.map(campaign => (
                 <motion.div
                   key={campaign._id}
-                  className="bg-white  p-6 rounded-lg shadow-lg transform hover:scale-105 transition-all duration-300"
+                  className="bg-white p-6 rounded-lg shadow-lg transform hover:scale-105 transition-all duration-300"
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5 }}
@@ -103,6 +102,7 @@ const HomePage = () => {
             </div>
           </section>
         </div>
+
         {/* Fancy Section 1 - Why Choose Us */}
         <section className="why-choose-us bg-gradient-to-r from-purple-600 py-16 px-2">
           <div className="container mx-auto text-center text-white">

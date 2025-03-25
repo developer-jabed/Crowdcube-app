@@ -152,6 +152,7 @@ export default function AddCampaign() {
           >
             <option value="">Select Type</option>
             <option value="personal issue">Personal Issue</option>
+            <option value="education">Education</option>
             <option value="startup">Startup</option>
             <option value="business">Business</option>
             <option value="creative ideas">Creative Ideas</option>
