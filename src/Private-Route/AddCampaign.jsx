@@ -56,7 +56,7 @@ export default function AddCampaign() {
     };
 
     try {
-      const response = await fetch("http://localhost:5000/campaign", {
+      const response = await fetch("https://crowdfund-cam.vercel.app/campaign", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newCampaign),

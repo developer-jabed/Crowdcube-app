@@ -11,7 +11,7 @@ const AllCampaigns = () => {
   useEffect(() => {
     const fetchCampaigns = async () => {
       try {
-        const response = await fetch("http://localhost:5000/campaign");
+        const response = await fetch("https://crowdfund-cam.vercel.app/campaign");
         const data = await response.json();
 
         setCampaigns(data);
@@ -35,7 +35,7 @@ const AllCampaigns = () => {
         <table className="table-auto w-full border-collapse border">
           <thead>
             <tr className="bg-gray-200">
-              <th className="border px-4 py-2">Title</th>
+              <th className="border px-4 py-2">Date</th>
               <th className="border px-4 py-2">Category</th>
               <th className="border px-4 py-2">Goal</th>
               <th className="border px-4 py-2">Actions</th>
@@ -44,6 +44,7 @@ const AllCampaigns = () => {
           <tbody>
             {campaigns.map((campaign) => (
               <tr key={campaign._id} className="text-center">
+                <td className="border px-4 py-2">{campaign.date}</td>
                 <td className="border px-4 py-2">{campaign.name}</td>
                 <td className="border px-4 py-2">{campaign.type}</td>
                 <td className="border px-4 py-2">${campaign.amount}</td>

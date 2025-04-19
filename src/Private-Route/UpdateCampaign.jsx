@@ -91,7 +91,7 @@ const UpdateCampaign = () => {
 
     try {
       const res = await fetch(
-        `http://localhost:5000/campaign/${updateData._id}`,
+        `https://crowdfund-cam.vercel.app/campaign/${updateData._id}`,
         {
           method: "PUT",
           headers: {

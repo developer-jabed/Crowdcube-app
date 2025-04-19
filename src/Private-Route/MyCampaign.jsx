@@ -11,7 +11,7 @@ const MyCampaign = () => {
   useEffect(() => {
     const fetchCampaigns = async () => {
       try {
-        const response = await fetch("http://localhost:5000/campaign");
+        const response = await fetch("https://crowdfund-cam.vercel.app/campaign");
         const data = await response.json();
 
         const userCampaigns = data.filter((campaign) => {
@@ -39,7 +39,7 @@ const MyCampaign = () => {
       confirmButtonText: "Yes, delete it!",
     }).then((result) => {
       if (result.isConfirmed) {
-        fetch(`http://localhost:5000/campaign/${_id}`, {
+        fetch(`https://crowdfund-cam.vercel.app/campaign/${_id}`, {
           method: "DELETE",
         })
           .then((res) => res.json()) // <-- Fixed here

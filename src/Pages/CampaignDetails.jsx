@@ -32,7 +32,7 @@ const CampaignDetails = () => {
 
   useEffect(() => {
     if (!campaign) {
-      fetch(`http://localhost:5000/campaign/${_id}`)
+      fetch(`https://crowdfund-cam.vercel.app/campaign/${_id}`)
         .then((res) => res.json())
         .then((data) => setCampaign(data))
         .catch((err) => console.error("Error fetching campaign:", err));
@@ -64,7 +64,7 @@ const CampaignDetails = () => {
       description: campaign.description,
     };
 
-    fetch("http://localhost:5000/donations", {
+    fetch("https://crowdfund-cam.vercel.app/donations", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(donationData),

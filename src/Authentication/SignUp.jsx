@@ -44,7 +44,7 @@ const SignUp = () => {
 
       const newUser = { displayName, email, photoURL, password };
 
-      await fetch("http://localhost:5000/users", {
+      await fetch("https://crowdfund-cam.vercel.app/users", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newUser),

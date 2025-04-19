@@ -2,6 +2,7 @@ import { useState, useEffect, useContext } from "react";
 import { NavLink } from "react-router-dom";
 import { AuthContext } from "../Provider/AuthProvider";
 import { FaUser } from "react-icons/fa";
+import logo from "../assets/cube.jpg"
 
 const NavBar = () => {
   const { user, logOut } = useContext(AuthContext);
@@ -29,7 +30,7 @@ const NavBar = () => {
   return (
     <div>
       <div className="navbar bg-base-100 shadow-sm fixed top-0 left-0 right-0 z-50 flex justify-between p-4">
-        {/* Mobile Menu */}
+        
         <div className="navbar-start">
           <div className="dropdown lg:hidden relative">
             <button
@@ -74,7 +75,7 @@ const NavBar = () => {
         {/* Left - Logo */}
         <div className="navbar-start flex items-center gap-2">
           <img
-            src="/public/asset/cube.jpg" // Replace with the path to your logo image
+            src= {logo}
             alt="Website Logo"
             className="h-6 w-6 transition-transform duration-300 transform hover:rotate-12"
           />

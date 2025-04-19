@@ -5,12 +5,18 @@ import { useEffect, useState } from "react";
 // eslint-disable-next-line no-unused-vars
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import slide1 from "../assets/slide1.jpg"
+import slide2 from "../assets/slide2.jpg"
+import slide3 from "../assets/slide3.jpg"
+import slide4 from "../assets/slide4.jpg"
 
 const HomePage = () => {
   const images = [
-    "/src/assets/slide1.jpg",
-    "/src/assets/slide2.jpg",
-    "/src/assets/slide3.jpg",
+    slide1,
+    slide2,
+    slide3,
+    slide4,
+   
   ];
 
   const [campaigns, setCampaigns] = useState([]);
@@ -18,7 +24,7 @@ const HomePage = () => {
   useEffect(() => {
     const fetchCampaigns = async () => {
       try {
-        const response = await fetch("http://localhost:5000/campaign");
+        const response = await fetch("https://crowdfund-cam.vercel.app/campaign");
         const data = await response.json();
         setCampaigns(data);
         console.log(data);

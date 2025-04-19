@@ -26,7 +26,6 @@ const Router = createBrowserRouter([
             <CampaignDetails></CampaignDetails>
           </PrivateRoute>
         ),
- 
       }, // Campaign details page
       {
         path: "myCampaign",
@@ -45,9 +44,15 @@ const Router = createBrowserRouter([
         ),
       },
       {
-        path: 'updateCampaign/:id',
-        element: <PrivateRoute><UpdateCampaign /></PrivateRoute>,
-        loader: ({ params }) => fetch(`http://localhost:5000/campaign/${params.id}`)
+        path: "updateCampaign/:id",
+        element: (
+          <PrivateRoute>
+            <UpdateCampaign />
+          </PrivateRoute>
+        ),
+        loader: ({ params }) =>
+          fetch(`https://crowdfund-cam.vercel.app
+                 /campaign/${params.id}`),
       },
       {
         path: "form",
@@ -59,12 +64,13 @@ const Router = createBrowserRouter([
       },
 
       {
-        path: '/myDonations' , element: (
+        path: "/myDonations",
+        element: (
           <PrivateRoute>
             <MyDonations></MyDonations>
           </PrivateRoute>
         ),
-        loader: () => fetch('http://localhost:5000/donations')
+        loader: () => fetch("https://crowdfund-cam.vercel.app/donations"),
       },
     ],
   },
@@ -76,7 +82,7 @@ const Router = createBrowserRouter([
       { path: "/auth/register", element: <SignUp /> },
     ],
   },
-  { path: "*", element: <NotFound></NotFound>},
+  { path: "*", element: <NotFound></NotFound> },
 ]);
 
 export default Router;
